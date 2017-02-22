@@ -11,8 +11,13 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
+import org.pb.interview.web.WebListFragment
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+    val WEB_SITE_TAG = "website"
+
+    //TODO might initial here not onCreate()
+    lateinit var fragmentNavigator:FragmentNavigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +39,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         val navigationView = findViewById(R.id.nav_view) as NavigationView
         navigationView.setNavigationItemSelectedListener(this)
+
+        fragmentNavigator = FragmentNavigator(supportFragmentManager)
     }
 
     override fun onBackPressed() {
@@ -70,9 +77,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val id = item.itemId
 
         if (id == R.id.nav_menu) {
-            // Handle the camera action
         } else if (id == R.id.nav_website) {
-
+            //TODO tag should management by fragmentNavigator
+            fragmentNavigator.addFragment(WebListFragment(fragmentNavigator), WEB_SITE_TAG)
         } else if (id == R.id.nav_gallery) {
 
         }
@@ -82,7 +89,5 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    fun addFragment(){
 
-    }
 }

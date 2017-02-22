@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    >
+    <data>
+        <variable
+            name="viewModel"
+            type="org.pb.interview.web.WebListViewModel"/>
+    </data>
+    <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@drawable/table_divider_list"
+        android:showDividers="end">
+
+        <TableRow
+            style="@style/TableRowTheme"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:onClick="@{() -> viewModel.gotoBitBucket()}"
+            >
+
+            <TextView
+                android:layout_weight="4"
+                android:gravity="start"
+                android:text="@string/bitbucket"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#000000" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:contentDescription="@string/arrow_right_black"
+                app:srcCompat="@drawable/ic_keyboard_arrow_right_black_24dp" />
+        </TableRow>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_height"
+            android:layout_marginStart="18dp"
+            android:background="@color/divider_horizontal_color" />
+
+        <TableRow
+            style="@style/TableRowTheme"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:onClick="@{() -> viewModel.gotoGitHub()}"
+
+            >
+
+            <TextView
+                android:layout_weight="4"
+                android:gravity="start"
+                android:text="@string/github"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#000000" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:contentDescription="@string/arrow_right_black"
+                app:srcCompat="@drawable/ic_keyboard_arrow_right_black_24dp" />
+        </TableRow>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_height"
+            android:layout_marginStart="18dp"
+            android:background="@color/divider_horizontal_color" />
+
+        <TableRow
+            style="@style/TableRowTheme"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:onClick="@{() -> viewModel.gotoGoogle()}"
+            >
+
+            <TextView
+                android:layout_weight="4"
+                android:gravity="start"
+                android:text="@string/google"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#000000" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:contentDescription="@string/arrow_right_black"
+                app:srcCompat="@drawable/ic_keyboard_arrow_right_black_24dp" />
+        </TableRow>
+
+
+    </TableLayout>
+</layout>
