@@ -10,16 +10,18 @@ import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import org.pb.interview.common.FragmentNavigator
+import org.pb.interview.common.FragmentHelper
+import org.pb.interview.common.RxFragment
 import org.pb.interview.home.HomeFragment
 import org.pb.interview.web.WebListFragment
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-    val WEB_SITE_TAG = "website"
+    val WEB_LIST_TAG = "website"
     val HOME_TAG = "home"
+    lateinit var webListRxFragment: RxFragment
 
     //TODO might initial here not onCreate()
-    lateinit var fragmentNavigator: FragmentNavigator
+    lateinit var fragmentHelper: FragmentHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +33,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     .setAction("Action", null).show()
         }
         initNavigatorDrawer()
-        initFragmentNavigator()
+        initFragment()
     }
 
     fun initNavigatorDrawer() {
@@ -43,10 +45,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         nav_view.setNavigationItemSelectedListener(this)
     }
 
-    fun initFragmentNavigator() {
-        fragmentNavigator = FragmentNavigator(supportFragmentManager, container.id)
-        fragmentNavigator.addFragment(HomeFragment(), HOME_TAG)
+    fun initFragment() {
+        fragmentHelper = FragmentHelper(supportFragmentManager, container.id)
+        fragmentHelper.gotoFragment(HomeFragment(), HOME_TAG, false)
+
+        webListRxFragment = RxFragment(fragmentHelper, {WebListFragment(fragmentHelper)}, WEB_LIST_TAG)
     }
+
 
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
@@ -82,8 +87,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         if (id == R.id.nav_menu) {
         } else if (id == R.id.nav_website) {
-            //TODO tag should management by fragmentNavigator
-            fragmentNavigator.addFragment(WebListFragment(fragmentNavigator), WEB_SITE_TAG)
+            webListRxFragment.gotoFragment()
         } else if (id == R.id.nav_gallery) {
 
         }
