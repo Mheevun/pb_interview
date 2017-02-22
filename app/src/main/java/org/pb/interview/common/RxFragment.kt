@@ -42,6 +42,7 @@ class RxFragment(val fragmentHelper:FragmentHelper, var factory: () -> Fragment,
     }
 
     private fun waitForFragmentToCreateThenAddTheFragment(){
+        //Maybe.just(true) is just dummy Maybe
         Maybe.zip(fragmentObsevable, Maybe.just(true),BiFunction<Fragment, Boolean, Any>{fragment, empty ->
             this.fragment = fragment
             gotoFragmentIfNotNull()
