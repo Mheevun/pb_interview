@@ -12,13 +12,16 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import org.pb.interview.common.FragmentHelper
 import org.pb.interview.common.RxFragment
+import org.pb.interview.gallery.GalleryFragment
 import org.pb.interview.home.HomeFragment
 import org.pb.interview.web.WebListFragment
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     val WEB_LIST_TAG = "website"
+    val GALLERY_LIST_TAG = "gallery"
     val HOME_TAG = "home"
     lateinit var webListRxFragment: RxFragment
+    lateinit var galleryRxFragment: RxFragment
 
     //TODO might initial here not onCreate()
     lateinit var fragmentHelper: FragmentHelper
@@ -50,6 +53,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         fragmentHelper.gotoFragment(HomeFragment(), HOME_TAG, false)
 
         webListRxFragment = RxFragment(fragmentHelper, {WebListFragment(fragmentHelper)}, WEB_LIST_TAG)
+        galleryRxFragment = RxFragment(fragmentHelper, {GalleryFragment()}, GALLERY_LIST_TAG)
     }
 
 
@@ -89,7 +93,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else if (id == R.id.nav_website) {
             webListRxFragment.gotoFragment()
         } else if (id == R.id.nav_gallery) {
-
+            galleryRxFragment.gotoFragment()
         }
 
         drawer_layout.closeDrawer(GravityCompat.START)
