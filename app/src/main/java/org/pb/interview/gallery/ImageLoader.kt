@@ -14,7 +14,7 @@ class ImageLoader(var context: Context) {
     fun loadImage(url: String, imageView: ImageView) {
         val state = getStateOrCreateIfNotExist(url)
 
-        if (state.isAlreadyLoad || state.isLoading)
+        if (imageView.drawable != null || state.isLoading)
             return
 
         Log.d(TAG, "load image url: $url")
@@ -26,7 +26,6 @@ class ImageLoader(var context: Context) {
                 .into(imageView, object : Callback {
                     override fun onSuccess() {
                         state.isLoading = true
-                        state.isAlreadyLoad = true
                     }
 
                     override fun onError() {
@@ -51,5 +50,5 @@ class ImageLoader(var context: Context) {
         return stateList.filter { it.url == url }.singleOrNull()
     }
 
-    class IsLoadingState(var url: String, var isLoading: Boolean = false, var isAlreadyLoad: Boolean = false)
+    class IsLoadingState(var url: String, var isLoading: Boolean = false)
 }
