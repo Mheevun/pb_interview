@@ -7,10 +7,10 @@ import org.junit.Test
 /**
  * Created by cnr on 25/2/2560.
  */
-class ImageProviderTest{
+class ImageDataMgrTest {
 
     lateinit var cloudinary:Cloudinary
-    lateinit var target:ImageProvider
+    lateinit var target: ImageDataMgr
 
     @Before
     fun setup(){
@@ -21,12 +21,12 @@ class ImageProviderTest{
         config.put("api_secret", "vXS7pgJ9Ge8fF6amdqMamOvmhjY")
         cloudinary = Cloudinary(config)
 
-        target = ImageProvider(cloudinary,"test")
+//        target = ImageDataMgr(cloudinary,"test")
     }
 
     @Test
     fun could_get_image_id_list(){
         System.out.println("test")
-        val idList:List<String> = target.getImageIds()
+//        val idList:List<String> = target.getImageIds()
     }
 }

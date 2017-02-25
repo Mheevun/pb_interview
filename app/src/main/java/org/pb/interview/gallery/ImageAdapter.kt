@@ -7,28 +7,33 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
-import com.cloudinary.Cloudinary
-import com.cloudinary.android.Utils
-import com.squareup.picasso.Picasso
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import org.pb.interview.R
+import javax.inject.Inject
 
 /**
  * grid view's item
  */
-class ImageAdapter(var context: Context) : BaseAdapter() {
+class ImageAdapter @Inject constructor(var context: Context, val imageDataMgr: ImageDataMgr, val imageLoader: ImageLoader) : BaseAdapter() {
     val TAG:String? = ImageAdapter::class.simpleName
     private val inflater: LayoutInflater
-    val cloudinary = Cloudinary(Utils.cloudinaryUrlFromContext(context))
-    var items = mutableListOf<String>()
+    private val items = mutableListOf<String>()
+//    val cloudinary = Cloudinary(Utils.cloudinaryUrlFromContext(context))
     init {
         this.inflater = LayoutInflater.from(context)
-        val url = cloudinary.url().generate("sample.jpg")
-        items.add(url)
-        items.add(url)
-        items.add(url)
-        items.add(url)
-        items.add(url)
+        imageDataMgr.getImageListURL()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext { addItem(it) }
+                .subscribe()
     }
+
+    fun addItem(url:String){
+        items.add(url)
+        notifyDataSetChanged()
+    }
+
 
     override fun getCount(): Int {
         return items.size
@@ -44,39 +49,33 @@ class ImageAdapter(var context: Context) : BaseAdapter() {
 
     // Convert DP to PX
     // Source: http://stackoverflow.com/a/8490361
-    fun dpToPx(dps: Int): Int {
-        val scale = context.resources.displayMetrics.density
-        val pixels = (dps * scale + 0.5f).toInt()
-
-        return pixels
-    }
+//    fun dpToPx(dps: Int): Int {
+//        val scale = context.resources.displayMetrics.density
+//        val pixels = (dps * scale + 0.5f).toInt()
+//
+//        return pixels
+//    }
 
     // create a new ImageView for each item referenced by the Adapter
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val item_layout: View
+        Log.d(TAG, "position: $position")
+
+        val itemLayout: View
         val viewHolder: ViewHolder
 
         if (convertView == null) {
-            item_layout = inflater.inflate(R.layout.grid_item, parent, false)
-            viewHolder = ViewHolder(item_layout, items[position])
-            item_layout.tag = viewHolder
+            itemLayout = inflater.inflate(R.layout.grid_item, parent, false)
+            val imageView = itemLayout.findViewById(R.id.image_view) as ImageView
+            viewHolder = ViewHolder(imageView, items[position])
+            itemLayout.tag = viewHolder
         } else {
-            item_layout = convertView
-            viewHolder = item_layout.tag as ViewHolder
+            itemLayout = convertView
+            viewHolder = itemLayout.tag as ViewHolder
         }
-        loadImage(viewHolder)
-
-        return item_layout
+        imageLoader.loadImage(viewHolder.url, viewHolder.imageView)
+        return itemLayout
     }
 
-    fun loadImage(viewHolder:ViewHolder){
-        Log.d(TAG, "load image "+viewHolder.url)
-        Picasso.with(context)
-                .load(viewHolder.url)
-                .fit()
-                .placeholder(R.drawable.ic_crop_original_black_24dp)
-                .into(viewHolder.imageView)
-    }
 
     fun adjustImage(imageView:ImageView){
 
@@ -100,10 +99,7 @@ class ImageAdapter(var context: Context) : BaseAdapter() {
 
 
 
-    class ViewHolder(val item_layout: View, var url:String){
-        var imageView = item_layout.findViewById(R.id.image_view) as ImageView
-
-    }
+    class ViewHolder(var imageView: ImageView, var url:String)
 
 
 }
