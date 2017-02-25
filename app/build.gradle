@@ -103,7 +103,7 @@ dependencies {
     compile "com.android.support:animated-vector-drawable:$supportLibVersion"
 
     //constraint layout
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta5'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0'
 
     /**********************End of Support Library Dependencies*******************************/
 
