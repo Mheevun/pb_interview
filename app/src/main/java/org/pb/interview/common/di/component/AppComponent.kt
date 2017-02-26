@@ -1,7 +1,8 @@
-package org.pb.interview.common.di
+package org.pb.interview.common.di.component
 
 import android.app.Application
 import dagger.Component
+import org.pb.interview.common.di.module.AppModule
 import javax.inject.Singleton
 
 

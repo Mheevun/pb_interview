@@ -39,11 +39,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:columnWidth="100dp"
+            android:columnWidth="150dp"
             android:numColumns="auto_fit"
             android:verticalSpacing="24dp"
             android:horizontalSpacing="10dp"
             android:stretchMode="spacingWidthUniform"
+            app:adapter="@{viewModel.adapterObservable}"
             />
 
         <android.support.design.widget.FloatingActionButton
@@ -53,7 +54,7 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
             android:onClick="@{()->viewModel.pickImage()}"
-            app:srcCompat="@android:drawable/ic_dialog_email" />
+            app:srcCompat="@drawable/ic_photo_camera_white_24dp" />
     </android.support.design.widget.CoordinatorLayout>
 
 </layout>

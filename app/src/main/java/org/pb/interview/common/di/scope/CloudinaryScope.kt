@@ -1,4 +1,4 @@
-package org.pb.interview.common.di
+package org.pb.interview.common.di.scope
 
 import javax.inject.Scope
 

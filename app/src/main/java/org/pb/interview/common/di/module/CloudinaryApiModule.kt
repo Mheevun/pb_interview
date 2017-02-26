@@ -1,14 +1,16 @@
-package org.pb.interview.common.di
+package org.pb.interview.common.di.module
 
 import com.cloudinary.Cloudinary
 import dagger.Module
 import dagger.Provides
 import org.pb.interview.common.api.CloudinaryApi
+import org.pb.interview.common.di.scope.CloudinaryScope
 import retrofit2.Retrofit
 
 
 @Module
 class CloudinaryApiModule{
+
     @CloudinaryScope
     @Provides
     fun provideCloudinaryApi(retrofit: Retrofit): CloudinaryApi {

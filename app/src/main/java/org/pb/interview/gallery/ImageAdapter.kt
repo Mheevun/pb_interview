@@ -1,37 +1,21 @@
 package org.pb.interview.gallery
 
-import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import org.pb.interview.R
+import org.pb.interview.gallery.image_loader.ImageLoader
 import javax.inject.Inject
 
 /**
- * grid view's item
+ * provide grid's items
  */
-class ImageAdapter @Inject constructor(var context: Context, val imageDataMgr: ImageDataMgr, val imageLoader: ImageLoader) : BaseAdapter() {
-    val TAG:String? = ImageAdapter::class.simpleName
-    private val inflater: LayoutInflater
+class ImageAdapter @Inject constructor(var inflater: LayoutInflater, val imageLoader: ImageLoader) : BaseAdapter() {
+        val TAG:String? = ImageAdapter::class.simpleName
     private val items = mutableListOf<String>()
-//    val cloudinary = Cloudinary(Utils.cloudinaryUrlFromContext(context))
-    init {
-        this.inflater = LayoutInflater.from(context)
-        loadImageIntoView()
-    }
-    fun loadImageIntoView(){
-        imageDataMgr.getImageListURL()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext { addItem(it) }
-                .doOnComplete { notifyDataSetChanged() }
-                .subscribe()
-    }
 
     fun addItem(url:String){
         Log.d(TAG, "addItem: $url at ${items.size}")

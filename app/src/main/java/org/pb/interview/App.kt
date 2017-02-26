@@ -2,9 +2,9 @@ package org.pb.interview
 
 import android.app.Application
 import com.miguelbcr.ui.rx_paparazzo2.RxPaparazzo
-import org.pb.interview.common.di.AppComponent
-import org.pb.interview.common.di.AppModule
-import org.pb.interview.common.di.DaggerAppComponent
+import org.pb.interview.common.di.component.AppComponent
+import org.pb.interview.common.di.component.DaggerAppComponent
+import org.pb.interview.common.di.module.AppModule
 
 class App: Application() {
     companion object {

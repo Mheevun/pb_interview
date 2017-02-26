@@ -1,4 +1,4 @@
-package org.pb.interview.common.di
+package org.pb.interview.common.di.module
 
 import android.app.Application
 import com.google.gson.FieldNamingPolicy
@@ -8,6 +8,7 @@ import dagger.Provides
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.pb.interview.common.di.scope.CloudinaryScope
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory

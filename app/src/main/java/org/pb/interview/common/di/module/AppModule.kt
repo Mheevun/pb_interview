@@ -1,4 +1,4 @@
-package org.pb.interview.common.di
+package org.pb.interview.common.di.module
 
 import android.app.Application
 import dagger.Module

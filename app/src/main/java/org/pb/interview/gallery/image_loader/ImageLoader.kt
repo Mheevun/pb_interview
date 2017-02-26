@@ -1,4 +1,4 @@
-package org.pb.interview.gallery
+package org.pb.interview.gallery.image_loader
 
 import android.content.Context
 import android.util.Log
@@ -29,7 +29,6 @@ class ImageLoader(var context: Context) {
                     override fun onSuccess() {
                         state.isLoading = false
                     }
-
                     override fun onError() {
                         Log.w(TAG, "error load image url: $url")
                         state.isLoading = false
@@ -38,7 +37,7 @@ class ImageLoader(var context: Context) {
                 })
     }
 
-    fun createState(url: String):IsLoadingState{
+    fun createState(url: String): IsLoadingState {
         Log.d(TAG, "create state for url: $url")
         val state = IsLoadingState(url)
         stateList.add(state)

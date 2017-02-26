@@ -2,19 +2,23 @@ package org.pb.interview.gallery
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.fragment_gallery.*
+import io.reactivex.Maybe
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.BiFunction
+import io.reactivex.schedulers.Schedulers
 import org.pb.interview.App
 import org.pb.interview.R
+import org.pb.interview.common.RxInstance
 import org.pb.interview.common.api.CloudinaryApiService
-import org.pb.interview.common.di.DaggerCloudinaryNetComponent
-import org.pb.interview.common.di.NetModule
+import org.pb.interview.common.di.component.DaggerCloudinaryNetComponent
+import org.pb.interview.common.di.module.NetModule
 import org.pb.interview.common.inflateBinding
 import org.pb.interview.databinding.FragmentGalleryBinding
-import org.pb.interview.gallery.pick.ImagePicker
+import org.pb.interview.gallery.image_loader.ImageLoader
+import org.pb.interview.gallery.image_picker.ImagePicker
 import javax.inject.Inject
 
 /**
@@ -23,8 +27,6 @@ import javax.inject.Inject
 
 class GalleryFragment : Fragment() {
     val TAG: String? = GalleryFragment::class.simpleName
-    @Inject
-    lateinit var imageDataMgr: ImageDataMgr
 
     @Inject
     lateinit var apiService:CloudinaryApiService
@@ -43,10 +45,23 @@ class GalleryFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        Log.d(TAG, "onViewCreated")
-        val adapter = ImageAdapter(context, imageDataMgr, ImageLoader(context))
-        gridview.adapter = adapter
-        binding.viewModel = GalleryViewModel(adapter, ImagePicker(this), apiService)//TODO move to dagger
+        createGalleryViewModel()
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe{viewModel -> binding.viewModel  = viewModel}
+
+    }
+    fun createGalleryViewModel():Maybe<GalleryViewModel>{
+        return Maybe.zip(createAdapter(), createImagePicker(), BiFunction<ImageAdapter, ImagePicker, GalleryViewModel>{
+            adapter, picker -> GalleryViewModel(adapter, picker, apiService)
+        })
+    }
+
+    fun createAdapter(): Maybe<ImageAdapter>{
+        return RxInstance.create { ImageAdapter(LayoutInflater.from(context), ImageLoader(context)) }
+    }
+    fun createImagePicker():Maybe<ImagePicker>{
+        return RxInstance.create { ImagePicker(this) }
     }
 
     fun initDI() {
@@ -55,5 +70,10 @@ class GalleryFragment : Fragment() {
                 .netModule(NetModule("http://res.cloudinary.com/"))
                 .build()
                 .inject(this)
+    }
+
+    override fun onStop() {
+        binding.viewModel.close()
+        super.onStop()
     }
 }
