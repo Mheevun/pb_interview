@@ -9,4 +9,5 @@ interface CloudinaryApi {
 
     @GET("ppwasin/image/list/{tag}.json")
     fun getImageList(@Path("tag") tag:String): Observable<ImageListQueryResponse>
+
 }
