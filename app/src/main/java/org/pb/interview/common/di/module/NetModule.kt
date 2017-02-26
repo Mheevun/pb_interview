@@ -8,7 +8,7 @@ import dagger.Provides
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.pb.interview.common.di.scope.CloudinaryScope
+import org.pb.interview.common.di.scope.MainActivityScope
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -17,7 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class NetModule(internal var mBaseUrl: String) {
 
     @Provides
-    @CloudinaryScope
+    @MainActivityScope
     fun provideHttpCache(application: Application): Cache {
         val cacheSize = 10 * 1024 * 1024
         val cache = Cache(application.cacheDir, cacheSize.toLong())
@@ -25,7 +25,7 @@ class NetModule(internal var mBaseUrl: String) {
     }
 
     @Provides
-    @CloudinaryScope
+    @MainActivityScope
     fun provideOkhttpClient(cache: Cache): OkHttpClient {
         val logging = HttpLoggingInterceptor()
         logging.level = HttpLoggingInterceptor.Level.BASIC
@@ -39,7 +39,7 @@ class NetModule(internal var mBaseUrl: String) {
     }
 
     @Provides
-    @CloudinaryScope
+    @MainActivityScope
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         val gsonBuilder = GsonBuilder()
         gsonBuilder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)

@@ -11,9 +11,14 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import org.pb.interview.common.FragmentHelper
 import org.pb.interview.common.RxFragment
+import org.pb.interview.common.di.component.DaggerMainActivityComponent
+import org.pb.interview.common.di.component.MainActivityComponent
+import org.pb.interview.common.di.module.MainActivityModule
+import org.pb.interview.common.di.module.NetModule
 import org.pb.interview.gallery.GalleryFragment
 import org.pb.interview.home.HomeFragment
 import org.pb.interview.web.WebListFragment
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     val WEB_LIST_TAG = "website"
@@ -22,17 +27,34 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     lateinit var webListRxFragment: RxFragment
     lateinit var galleryRxFragment: RxFragment
 
-    //TODO might initial here not onCreate()
+    @Inject
     lateinit var fragmentHelper: FragmentHelper
+
+    companion object {
+        //platformStatic allow access it from java code
+        @JvmStatic
+        lateinit var mainActivityComponent: MainActivityComponent
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
+        initDI()
         initNavigatorDrawer()
         initFragment()
     }
+
+    private fun initDI() {
+        mainActivityComponent = DaggerMainActivityComponent.builder()
+                .appComponent(App.appComponent)
+                .netModule(NetModule("http://res.cloudinary.com/"))
+                .mainActivityModule(MainActivityModule(supportFragmentManager, container.id))
+                .build()
+        mainActivityComponent.inject(this)
+    }
+
 
     fun initNavigatorDrawer() {
         val toggle = ActionBarDrawerToggle(
@@ -44,11 +66,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     fun initFragment() {
-        fragmentHelper = FragmentHelper(supportFragmentManager, container.id)
+//        fragmentHelper = FragmentHelper(supportFragmentManager, container.id)
         fragmentHelper.gotoFragment(HomeFragment(), HOME_TAG, false)
 
-        webListRxFragment = RxFragment(fragmentHelper, {WebListFragment(fragmentHelper)}, WEB_LIST_TAG)
-        galleryRxFragment = RxFragment(fragmentHelper, {GalleryFragment()}, GALLERY_LIST_TAG)
+        webListRxFragment = RxFragment({WebListFragment()}, WEB_LIST_TAG)
+        galleryRxFragment = RxFragment({GalleryFragment()}, GALLERY_LIST_TAG)
     }
 
 
@@ -94,6 +116,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
+
+
+
 
 
 }

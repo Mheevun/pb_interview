@@ -9,12 +9,10 @@ import io.reactivex.Maybe
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
-import org.pb.interview.App
+import org.pb.interview.MainActivity
 import org.pb.interview.R
 import org.pb.interview.common.RxInstance
 import org.pb.interview.common.api.CloudinaryApiService
-import org.pb.interview.common.di.component.DaggerCloudinaryNetComponent
-import org.pb.interview.common.di.module.NetModule
 import org.pb.interview.common.inflateBinding
 import org.pb.interview.databinding.FragmentGalleryBinding
 import org.pb.interview.gallery.image_loader.ImageLoader
@@ -36,7 +34,7 @@ class GalleryFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initDI()
+        MainActivity.mainActivityComponent.inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -62,14 +60,6 @@ class GalleryFragment : Fragment() {
     }
     fun createImagePicker():Maybe<ImagePicker>{
         return RxInstance.create { ImagePicker(this) }
-    }
-
-    fun initDI() {
-        DaggerCloudinaryNetComponent.builder()
-                .appComponent(App.appComponent)
-                .netModule(NetModule("http://res.cloudinary.com/"))
-                .build()
-                .inject(this)
     }
 
     override fun onStop() {

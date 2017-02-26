@@ -6,17 +6,26 @@ import io.reactivex.Maybe
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
+import org.pb.interview.MainActivity
+import org.pb.interview.common.di.scope.MainActivityScope
+import javax.inject.Inject
 
 /**
  * allow fragment object to create first in another thread
  * then add into the fragment stack later
  */
 
-class RxFragment(val fragmentHelper:FragmentHelper, var factory: () -> Fragment, val tag: String) {
+@MainActivityScope
+class RxFragment(var factory: () -> Fragment, val tag: String) {
     private val TAG:String? = RxFragment::class.simpleName
+
+    @Inject
+    lateinit var fragmentHelper:FragmentHelper
+
     private var fragmentObsevable = createFragment()
     private var fragment:Fragment? = null
     init{
+        MainActivity.mainActivityComponent.inject(this)
         createFragmentInTheBackground()
     }
 
@@ -43,7 +52,7 @@ class RxFragment(val fragmentHelper:FragmentHelper, var factory: () -> Fragment,
 
     private fun waitForFragmentToCreateThenAddTheFragment(){
         //Maybe.just(true) is just dummy Maybe
-        Maybe.zip(fragmentObsevable, Maybe.just(true),BiFunction<Fragment, Boolean, Any>{fragment, empty ->
+        Maybe.zip(fragmentObsevable, Maybe.just(true),BiFunction<Fragment, Any, Any>{fragment, empty ->
             this.fragment = fragment
             gotoFragmentIfNotNull()
         }).subscribe()

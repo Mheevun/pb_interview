@@ -55,14 +55,25 @@ class ImageAdapter @Inject constructor(var inflater: LayoutInflater, val imageLo
             Log.d(TAG, "convertView is null")
             itemLayout = inflater.inflate(R.layout.grid_item, parent, false)
             val imageView = itemLayout.findViewById(R.id.image_view) as ImageView
+
             viewHolder = ViewHolder(imageView)
             itemLayout.tag = viewHolder
         } else {
             itemLayout = convertView
             viewHolder = itemLayout.tag as ViewHolder
         }
+        Log.d(TAG, "########start loader image of $position, image is null: ${viewHolder.imageView} ##############")
         imageLoader.loadImage(items[position], viewHolder.imageView)
+        addClickToDetail(viewHolder.imageView, items[position])
+        Log.d(TAG, "########load image into imageView of position $position##############")
+
         return itemLayout
+    }
+
+    fun addClickToDetail(imageView:ImageView, url:String){
+        imageView.setOnClickListener {
+
+        }
     }
 
 
@@ -88,7 +99,8 @@ class ImageAdapter @Inject constructor(var inflater: LayoutInflater, val imageLo
 
 
 
-    class ViewHolder(var imageView: ImageView)
+    class ViewHolder(var imageView: ImageView){
 
+    }
 
 }

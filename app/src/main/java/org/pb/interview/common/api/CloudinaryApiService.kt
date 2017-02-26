@@ -6,13 +6,11 @@ import com.cloudinary.utils.ObjectUtils
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
-import org.pb.interview.common.di.scope.CloudinaryScope
 import javax.inject.Inject
 
 /**
  * service for accessing cloudinaryApi
  */
-@CloudinaryScope
 class CloudinaryApiService @Inject constructor(val cloudinaryApi: CloudinaryApi, val cloudinary: Cloudinary) {
     val TAG:String? = CloudinaryApiService::class.simpleName
     val CLOUDINARY_TAG = "test"

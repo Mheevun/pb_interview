@@ -20,7 +20,7 @@ class GalleryViewModel(
         apiService.getImageURL()
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext { adapter.addItem(it) }
-                .doOnNext { adapter.notifyDataSetChanged() }
+                .doOnComplete { adapter.notifyDataSetChanged() }
                 .subscribe()
 
     }
