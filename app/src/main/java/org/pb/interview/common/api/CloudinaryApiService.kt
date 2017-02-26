@@ -14,16 +14,16 @@ import javax.inject.Inject
 class CloudinaryApiService @Inject constructor(val cloudinaryApi: CloudinaryApi, val cloudinary: Cloudinary) {
     val TAG:String? = CloudinaryApiService::class.simpleName
     val CLOUDINARY_TAG = "test"
-    fun getImageListResponse(tag:String): Observable<ImageListQueryResponse> {
+    fun getImageListResponse(tag:String = CLOUDINARY_TAG): Observable<ImageListQueryResponse> {
         return cloudinaryApi.getImageList(tag)
     }
 
-    fun toResourceObservable(response: ImageListQueryResponse):Observable<Resource>{
+    private fun toResourceObservable(response: ImageListQueryResponse):Observable<Resource>{
         //reverse for showing the old one first
         return Observable.fromIterable(response.resources?.reversed())
     }
 
-    fun toURLObservable(publicId:String?):Observable<String>{
+    private fun toURLObservable(publicId:String?):Observable<String>{
         return Observable.just(cloudinary.url().generate(publicId))
     }
 

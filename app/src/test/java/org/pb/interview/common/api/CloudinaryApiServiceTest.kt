@@ -1,9 +1,11 @@
 package org.pb.interview.common.api
 
 import com.cloudinary.Cloudinary
+import com.cnr.phr_android.ImmediateSchedulerRule
 import com.nhaarman.mockito_kotlin.whenever
 import io.reactivex.Observable
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
@@ -14,24 +16,29 @@ class CloudinaryApiServiceTest {
     val mockResponse = ImageListQueryResponse()
     val tag: String = "tag"
     val publicIdList = mutableListOf("1", "2", "3", "4")
-    val urlList = mutableListOf<String>()
+    lateinit var urlList:MutableList<String>
     lateinit var target: CloudinaryApiService
 
     @Mock
     lateinit var cloudinaryApi: CloudinaryApi
+
+    @Rule @JvmField
+    var immediateSchedulerRule = ImmediateSchedulerRule()
 
     var cloudinary = createCloudinary()
 
     @Before
     fun setup() {
         mockResponse.resources = createImages()
-        createURLList()
+        urlList = createURLList(publicIdList)
         whenever(cloudinaryApi.getImageList(tag)).thenReturn(Observable.just(mockResponse))
 
         target = CloudinaryApiService(cloudinaryApi, cloudinary)
     }
-    private fun createURLList(){
-        publicIdList.mapTo(urlList) { createURL(it) }
+    private fun createURLList(publicIdList:MutableList<String>):MutableList<String>{
+        val list = mutableListOf<String>()
+        publicIdList.mapTo(list) { createURL(it) }
+        return  list
     }
     private fun createURL(publicId:String):String{
         return cloudinary.url().generate(publicId)
@@ -62,9 +69,16 @@ class CloudinaryApiServiceTest {
     }
 
     @Test
-    fun should_get_list_of_image_public_id() {
+    fun should_get_list_of_image_url_in_any_order() {
         target.getImageURL(tag).test()
-                .assertValueSequence(urlList)
+                .assertValueCount(urlList.size)
+                .assertValueSet(urlList)
+    }
+
+    @Test
+    fun should_get_list_of_image_url_in_inverse_order() {
+        target.getImageURL(tag).test()
+                .assertValueSequence(urlList.reversed())
     }
 
     private fun compare(resources: List<Resource>, expectResource: List<Resource>): Boolean {
