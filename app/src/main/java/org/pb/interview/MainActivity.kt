@@ -1,6 +1,7 @@
 package org.pb.interview
 
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
@@ -24,8 +25,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     val WEB_LIST_TAG = "website"
     val GALLERY_LIST_TAG = "gallery"
     val HOME_TAG = "home"
-    lateinit var webListRxFragment: RxFragment
-    lateinit var galleryRxFragment: RxFragment
+    lateinit var webListRxFragment:RxFragment
+    lateinit var galleryRxFragment:RxFragment
 
     @Inject
     lateinit var fragmentHelper: FragmentHelper
@@ -43,7 +44,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         initDI()
         initNavigatorDrawer()
-        initFragment()
+        if(savedInstanceState==null)
+            initFragment()
+        prepareFragment()
     }
 
     private fun initDI() {
@@ -66,9 +69,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     fun initFragment() {
-//        fragmentHelper = FragmentHelper(supportFragmentManager, container.id)
         fragmentHelper.gotoFragment(HomeFragment(), HOME_TAG, false)
 
+    }
+
+    fun prepareFragment(){
         webListRxFragment = RxFragment({WebListFragment()}, WEB_LIST_TAG)
         galleryRxFragment = RxFragment({GalleryFragment()}, GALLERY_LIST_TAG)
     }
@@ -118,6 +123,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
 
+    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
+        super.onSaveInstanceState(outState, outPersistentState)
+    }
 
 
 

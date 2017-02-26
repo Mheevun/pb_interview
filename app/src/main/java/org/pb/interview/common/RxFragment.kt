@@ -16,13 +16,13 @@ import javax.inject.Inject
  */
 
 @MainActivityScope
-class RxFragment(var factory: () -> Fragment, val tag: String) {
+class RxFragment (var factory: () -> Fragment, val tag: String) {
     private val TAG:String? = RxFragment::class.simpleName
 
     @Inject
     lateinit var fragmentHelper:FragmentHelper
 
-    private var fragmentObsevable = createFragment()
+    var fragmentObsevable = createFragment()
     private var fragment:Fragment? = null
     init{
         MainActivity.mainActivityComponent.inject(this)
@@ -32,7 +32,7 @@ class RxFragment(var factory: () -> Fragment, val tag: String) {
     private fun createFragmentInTheBackground(){
         Log.d(TAG, "create")
         fragmentObsevable
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe()
     }
@@ -40,6 +40,10 @@ class RxFragment(var factory: () -> Fragment, val tag: String) {
         return Maybe.create<Fragment> {
             it.onSuccess(factory())
         }
+    }
+
+    inline fun <reified T:Fragment> getFragment():Maybe<T>{
+        return fragmentObsevable.flatMap { Maybe.just(it as T) }
     }
 
     fun gotoFragment() {

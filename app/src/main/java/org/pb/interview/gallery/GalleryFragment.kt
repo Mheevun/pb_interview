@@ -11,6 +11,7 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import org.pb.interview.MainActivity
 import org.pb.interview.R
+import org.pb.interview.common.FragmentHelper
 import org.pb.interview.common.RxInstance
 import org.pb.interview.common.api.CloudinaryApiService
 import org.pb.interview.common.inflateBinding
@@ -28,6 +29,9 @@ class GalleryFragment : Fragment() {
 
     @Inject
     lateinit var apiService:CloudinaryApiService
+
+    @Inject
+    lateinit var fragmentHelper:FragmentHelper
 
     lateinit var binding: FragmentGalleryBinding
 
@@ -56,7 +60,7 @@ class GalleryFragment : Fragment() {
     }
 
     fun createAdapter(): Maybe<ImageAdapter>{
-        return RxInstance.create { ImageAdapter(LayoutInflater.from(context), ImageLoader(context)) }
+        return RxInstance.create { ImageAdapter(ImageLoader(context), fragmentHelper) }
     }
     fun createImagePicker():Maybe<ImagePicker>{
         return RxInstance.create { ImagePicker(this) }

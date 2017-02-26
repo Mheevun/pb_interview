@@ -8,6 +8,7 @@ import org.pb.interview.common.di.module.MainActivityModule
 import org.pb.interview.common.di.module.NetModule
 import org.pb.interview.common.di.scope.MainActivityScope
 import org.pb.interview.gallery.GalleryFragment
+import org.pb.interview.gallery.details.DetailsFragment
 import org.pb.interview.web.WebListFragment
 
 @MainActivityScope
@@ -19,4 +20,5 @@ interface MainActivityComponent {
     fun inject(injected: MainActivity)
     fun inject(injected: WebListFragment)
     fun inject(injected: GalleryFragment)
+    fun inject(injected: DetailsFragment)
 }

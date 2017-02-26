@@ -1,20 +1,25 @@
 package org.pb.interview.gallery
 
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import org.pb.interview.R
+import org.pb.interview.common.FragmentHelper
+import org.pb.interview.common.RxInstance
+import org.pb.interview.common.inflateBinding
+import org.pb.interview.databinding.GridItemBinding
+import org.pb.interview.gallery.details.DetailsFragment
 import org.pb.interview.gallery.image_loader.ImageLoader
-import javax.inject.Inject
 
 /**
  * provide grid's items
  */
-class ImageAdapter @Inject constructor(var inflater: LayoutInflater, val imageLoader: ImageLoader) : BaseAdapter() {
-        val TAG:String? = ImageAdapter::class.simpleName
+class ImageAdapter (val imageLoader: ImageLoader, val fragmentHelper: FragmentHelper) : BaseAdapter() {
+    val TAG:String? = ImageAdapter::class.simpleName
     private val items = mutableListOf<String>()
 
     fun addItem(url:String){
@@ -53,26 +58,30 @@ class ImageAdapter @Inject constructor(var inflater: LayoutInflater, val imageLo
 
         if (convertView == null) {
             Log.d(TAG, "convertView is null")
-            itemLayout = inflater.inflate(R.layout.grid_item, parent, false)
-            val imageView = itemLayout.findViewById(R.id.image_view) as ImageView
-
-            viewHolder = ViewHolder(imageView)
+            val binding = parent.inflateBinding<GridItemBinding>(R.layout.grid_item)
+            itemLayout = binding.root
+            viewHolder = ViewHolder(binding)
             itemLayout.tag = viewHolder
         } else {
             itemLayout = convertView
             viewHolder = itemLayout.tag as ViewHolder
         }
-        Log.d(TAG, "########start loader image of $position, image is null: ${viewHolder.imageView} ##############")
-        imageLoader.loadImage(items[position], viewHolder.imageView)
-        addClickToDetail(viewHolder.imageView, items[position])
-        Log.d(TAG, "########load image into imageView of position $position##############")
+        val imageView =  viewHolder.binding.imageView
+        imageLoader.loadFitImage(items[position], imageView)
+        addClickToDetail( imageView, items[position])
 
         return itemLayout
     }
 
     fun addClickToDetail(imageView:ImageView, url:String){
         imageView.setOnClickListener {
-
+            RxInstance.create { DetailsFragment() }
+                    .subscribeOn(Schedulers.computation())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe{
+                        it.url = url
+                        fragmentHelper.gotoFragment(it, "Detail")
+                    }
         }
     }
 
@@ -99,8 +108,6 @@ class ImageAdapter @Inject constructor(var inflater: LayoutInflater, val imageLo
 
 
 
-    class ViewHolder(var imageView: ImageView){
-
-    }
+    class ViewHolder(var binding: GridItemBinding)
 
 }

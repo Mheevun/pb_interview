@@ -18,5 +18,4 @@ class FragmentHelper(var supportFragmentManager: FragmentManager, @LayoutRes var
         }
         fragmentTransaction.commit()
     }
-
 }
