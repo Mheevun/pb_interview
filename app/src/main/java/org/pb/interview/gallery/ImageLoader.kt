@@ -14,8 +14,10 @@ class ImageLoader(var context: Context) {
     fun loadImage(url: String, imageView: ImageView) {
         val state = getStateOrCreateIfNotExist(url)
 
-        if (imageView.drawable != null || state.isLoading)
+        if (state.isLoading){
+            Log.d(TAG, "don't load image url: $url, state.isLoading: ${state.isLoading}, imageView.id: ${imageView.id}")
             return
+        }
 
         Log.d(TAG, "load image url: $url")
         state.isLoading = true
@@ -25,18 +27,19 @@ class ImageLoader(var context: Context) {
                 .placeholder(R.drawable.ic_crop_original_black_24dp)
                 .into(imageView, object : Callback {
                     override fun onSuccess() {
-                        state.isLoading = true
+                        state.isLoading = false
                     }
 
                     override fun onError() {
                         Log.w(TAG, "error load image url: $url")
-                        state.isLoading = true
+                        state.isLoading = false
                     }
 
                 })
     }
 
     fun createState(url: String):IsLoadingState{
+        Log.d(TAG, "create state for url: $url")
         val state = IsLoadingState(url)
         stateList.add(state)
         return state
@@ -50,5 +53,4 @@ class ImageLoader(var context: Context) {
         return stateList.filter { it.url == url }.singleOrNull()
     }
 
-    class IsLoadingState(var url: String, var isLoading: Boolean = false)
 }

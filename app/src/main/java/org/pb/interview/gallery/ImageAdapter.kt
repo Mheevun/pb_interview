@@ -22,16 +22,20 @@ class ImageAdapter @Inject constructor(var context: Context, val imageDataMgr: I
 //    val cloudinary = Cloudinary(Utils.cloudinaryUrlFromContext(context))
     init {
         this.inflater = LayoutInflater.from(context)
+        loadImageIntoView()
+    }
+    fun loadImageIntoView(){
         imageDataMgr.getImageListURL()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext { addItem(it) }
+                .doOnComplete { notifyDataSetChanged() }
                 .subscribe()
     }
 
     fun addItem(url:String){
-        items.add(url)
-        notifyDataSetChanged()
+        Log.d(TAG, "addItem: $url at ${items.size}")
+        items.add(items.size, url)
     }
 
 
@@ -64,15 +68,16 @@ class ImageAdapter @Inject constructor(var context: Context, val imageDataMgr: I
         val viewHolder: ViewHolder
 
         if (convertView == null) {
+            Log.d(TAG, "convertView is null")
             itemLayout = inflater.inflate(R.layout.grid_item, parent, false)
             val imageView = itemLayout.findViewById(R.id.image_view) as ImageView
-            viewHolder = ViewHolder(imageView, items[position])
+            viewHolder = ViewHolder(imageView)
             itemLayout.tag = viewHolder
         } else {
             itemLayout = convertView
             viewHolder = itemLayout.tag as ViewHolder
         }
-        imageLoader.loadImage(viewHolder.url, viewHolder.imageView)
+        imageLoader.loadImage(items[position], viewHolder.imageView)
         return itemLayout
     }
 
@@ -99,7 +104,7 @@ class ImageAdapter @Inject constructor(var context: Context, val imageDataMgr: I
 
 
 
-    class ViewHolder(var imageView: ImageView, var url:String)
+    class ViewHolder(var imageView: ImageView)
 
 
 }

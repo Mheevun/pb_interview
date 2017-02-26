@@ -1,30 +1,36 @@
 package org.pb.interview.gallery
 
-import android.app.Activity.RESULT_OK
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.miguelbcr.ui.rx_paparazzo2.RxPaparazzo
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_gallery.*
 import org.pb.interview.App
 import org.pb.interview.R
+import org.pb.interview.common.api.CloudinaryApiService
 import org.pb.interview.common.di.DaggerCloudinaryNetComponent
 import org.pb.interview.common.di.NetModule
+import org.pb.interview.common.inflateBinding
+import org.pb.interview.databinding.FragmentGalleryBinding
+import org.pb.interview.gallery.pick.ImagePicker
 import javax.inject.Inject
 
 /**
  * Fragment for gallery management
  */
 
-class GalleryFragment:Fragment(){
-
+class GalleryFragment : Fragment() {
+    val TAG: String? = GalleryFragment::class.simpleName
     @Inject
     lateinit var imageDataMgr: ImageDataMgr
+
+    @Inject
+    lateinit var apiService:CloudinaryApiService
+
+    lateinit var binding: FragmentGalleryBinding
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,26 +38,18 @@ class GalleryFragment:Fragment(){
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater?.inflate(R.layout.fragment_gallery, container, false)
-        return view
+        binding = container!!.inflateBinding(R.layout.fragment_gallery)
+        return binding.root
     }
+
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        gridview.adapter = ImageAdapter(context, imageDataMgr, ImageLoader(context))
-        RxPaparazzo.takeImage(this)
-                .usingCamera()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe{ response ->
-                    // See response.resultCode() doc
-                    if (response.resultCode() != RESULT_OK) {
-                        Log.d(TAG, "user cancel")
-                    }
-
-                    response.targetUI().loadImage(response.data());
-                }
+        Log.d(TAG, "onViewCreated")
+        val adapter = ImageAdapter(context, imageDataMgr, ImageLoader(context))
+        gridview.adapter = adapter
+        binding.viewModel = GalleryViewModel(adapter, ImagePicker(this), apiService)//TODO move to dagger
     }
 
-    fun initDI(){
+    fun initDI() {
         DaggerCloudinaryNetComponent.builder()
                 .appComponent(App.appComponent)
                 .netModule(NetModule("http://res.cloudinary.com/"))
