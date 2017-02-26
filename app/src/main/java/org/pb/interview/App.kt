@@ -18,7 +18,7 @@ class App: Application() {
         appComponent = DaggerAppComponent.builder()
                 .appModule(AppModule(this))
                 .build()
-        RxPaparazzo.register(this);
+        RxPaparazzo.register(this)
 
     }
 }

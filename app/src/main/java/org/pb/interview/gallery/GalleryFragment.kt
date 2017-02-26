@@ -73,7 +73,7 @@ class GalleryFragment : Fragment() {
     }
 
     override fun onStop() {
-        binding.viewModel.close()
+//        binding.viewModel.close()
         super.onStop()
     }
 }

@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
+    <data>
+        <variable
+            name="viewModel"
+            type="org.pb.interview.gallery.item.ItemViewModel"/>
+    </data>
 <ImageView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:contentDescription="@string/gallery_item"
     android:layout_width="150dp"
     android:layout_height="150dp"
     android:id="@+id/image_view"
+    android:onClick="@{(view)->viewModel.onClickImage(view)}"
     />
+    <!--android:onClick="@{viewModel.onClickImage()}"-->
+
 </layout>
