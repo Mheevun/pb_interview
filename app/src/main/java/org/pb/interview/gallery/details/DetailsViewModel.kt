@@ -8,6 +8,8 @@ class DetailsViewModel @Inject constructor(val cloudinaryApiService: CloudinaryA
     val width = ObservableField<Int>()
     val height = ObservableField<Int>()
     val url = ObservableField<String>()
+    val isLoading = ObservableField<Boolean>()
+
     init {
 
     }

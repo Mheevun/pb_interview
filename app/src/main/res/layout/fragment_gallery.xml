@@ -25,6 +25,7 @@
         <variable
             name="viewModel"
             type="org.pb.interview.gallery.GalleryViewModel"/>
+        <import type="android.view.View"/>
     </data>
     <!--TODO: should move to another activity -->
     <android.support.design.widget.CoordinatorLayout
@@ -33,6 +34,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
+        <com.wang.avi.AVLoadingIndicatorView
+            android:id="@+id/loading_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:indicatorName="BallPulseIndicator"
+            app:play="@{viewModel.isLoading}"
+            />
         <GridView
             android:id="@+id/gridview"
             android:layout_margin="@dimen/default_margin"

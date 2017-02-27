@@ -15,12 +15,16 @@ class GalleryViewModel(
         val apiService: CloudinaryApiService) {
     val TAG: String? = GalleryViewModel::class.simpleName
     val adapterObservable = ObservableField<BaseAdapter>(adapter)
+    val isLoading = ObservableField<Boolean>()
+    val isUploading = ObservableField<Boolean>()
 
     init {
         apiService.getImageURL()
+                .doOnSubscribe { isLoading.set(true) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext { adapter.addItem(it) }
                 .doOnComplete { adapter.notifyDataSetChanged() }
+                .doOnComplete { isLoading.set(false) }
                 .subscribe()
 
     }
@@ -28,12 +32,13 @@ class GalleryViewModel(
     fun pickImage() {
         Log.d(TAG, "on click")
         imagePicker.pickImage()
+                .subscribeOn(Schedulers.io())
                 .flatMapMaybe { path -> apiService.uploadImage(path) }
+                .doOnSubscribe { isUploading.set(true) }
                 .map { response -> response["url"] as String }
                 .doOnNext { adapter.addItem(it) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext { adapter.notifyDataSetChanged() }
-                .subscribeOn(Schedulers.io())
                 .subscribe()
 
     }
