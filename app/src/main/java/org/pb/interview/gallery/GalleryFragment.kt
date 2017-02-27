@@ -66,8 +66,4 @@ class GalleryFragment : Fragment() {
         return RxInstance.create { ImagePicker(this) }
     }
 
-    override fun onStop() {
-//        binding.viewModel.close()
-        super.onStop()
-    }
 }

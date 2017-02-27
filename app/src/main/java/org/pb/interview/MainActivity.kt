@@ -33,8 +33,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     lateinit var fragmentHelper: FragmentHelper
 
     companion object {
-        //platformStatic allow access it from java code
-        @JvmStatic
+        @JvmStatic  //platformStatic allow access it from java code
         lateinit var mainActivityComponent: MainActivityComponent
     }
 
