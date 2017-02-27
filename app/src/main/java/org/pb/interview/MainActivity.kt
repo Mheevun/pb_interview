@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.app_bar.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import org.pb.interview.common.FragmentHelper
 import org.pb.interview.common.RxFragment
@@ -32,8 +33,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     lateinit var fragmentHelper: FragmentHelper
 
     companion object {
-        //platformStatic allow access it from java code
-        @JvmStatic
+        @JvmStatic  //platformStatic allow access it from java code
         lateinit var mainActivityComponent: MainActivityComponent
     }
 
