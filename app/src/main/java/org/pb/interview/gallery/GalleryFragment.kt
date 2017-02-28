@@ -2,7 +2,6 @@ package org.pb.interview.gallery
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,15 +34,13 @@ class GalleryFragment : Fragment() {
 
     lateinit var binding: FragmentGalleryBinding
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.d(TAG, "onCreate")
+    fun initDI(){
         MainActivity.mainActivityComponent.inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = container!!.inflateBinding(R.layout.fragment_gallery)
+        initDI()
         return binding.root
     }
 
