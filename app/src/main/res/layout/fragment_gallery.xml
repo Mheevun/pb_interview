@@ -40,6 +40,7 @@
             android:layout_height="wrap_content"
             app:indicatorName="BallPulseIndicator"
             app:play="@{viewModel.isLoading}"
+            app:indicatorColor="@color/colorAccent"
             />
         <GridView
             android:id="@+id/gridview"

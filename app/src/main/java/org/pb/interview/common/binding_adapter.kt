@@ -1,6 +1,8 @@
 package org.pb.interview.common
 
 import android.databinding.BindingAdapter
+import android.util.Log
+import android.view.View
 import android.widget.BaseAdapter
 import android.widget.GridView
 import android.widget.ImageView
@@ -19,6 +21,22 @@ fun setURL(imageView: ImageView, url:String){
 
 @BindingAdapter("play")
 fun playLoadingIndicator(view: AVLoadingIndicatorView, play:Boolean?){
-    if(play==null||play==false) view.hide()
-    else view.show()
+    Log.d("binding_adapter","play: $play")
+    if(play==null||play==false) {
+        view.visibility = View.INVISIBLE
+        view.hide()
+    }
+    else {
+        view.visibility = View.VISIBLE
+        view.show()
+    }
+}
+
+@BindingAdapter("url", "onLoadingStateChanged")
+fun setURLWithListener(imageView: ImageView, url: String, onLoadingStateChanged: OnLoadingStateChanged){
+    ImageLoader(imageView.context).loadImage(url, imageView, onLoadingStateChanged)
+}
+
+interface OnLoadingStateChanged {
+    fun isLoaded(isLoad:Boolean)
 }
