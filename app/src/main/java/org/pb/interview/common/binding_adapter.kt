@@ -16,7 +16,7 @@ fun setAdapter(gridView:GridView, adapter:BaseAdapter?){
 
 @BindingAdapter("url")
 fun setURL(imageView: ImageView, url:String){
-    ImageLoader(imageView.context).loadImage(url, imageView)
+    ImageLoader().loadImage(url, imageView)
 }
 
 @BindingAdapter("play")
@@ -34,7 +34,7 @@ fun playLoadingIndicator(view: AVLoadingIndicatorView, play:Boolean?){
 
 @BindingAdapter("url", "onLoadingStateChanged")
 fun setURLWithListener(imageView: ImageView, url: String, onLoadingStateChanged: OnLoadingStateChanged){
-    ImageLoader(imageView.context).loadImage(url, imageView, onLoadingStateChanged)
+    ImageLoader().loadImage(url, imageView, onLoadingStateChanged)
 }
 
 interface OnLoadingStateChanged {

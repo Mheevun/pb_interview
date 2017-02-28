@@ -39,7 +39,9 @@
                 app:srcCompat="@drawable/ic_crop_original_black_24dp"
                 app:url="@{viewModel.url}"
                 app:onLoadingStateChanged="@{viewModel::onLoadingStateChanged}"
-                android:contentDescription="@string/image_full_scale" />
+                android:contentDescription="@string/image_full_scale"
+                android:background="@drawable/image_border"
+                />
             </HorizontalScrollView>
         </ScrollView>
 

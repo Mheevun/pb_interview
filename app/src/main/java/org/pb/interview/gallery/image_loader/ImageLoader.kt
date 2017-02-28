@@ -1,6 +1,5 @@
 package org.pb.interview.gallery.image_loader
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.util.Log
@@ -9,75 +8,75 @@ import android.widget.ImageView
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
-import io.reactivex.Completable
 import org.pb.interview.R
 import org.pb.interview.common.OnLoadingStateChanged
 
-class ImageLoader(var context: Context) {
+class ImageLoader {
     val TAG: String? = ImageLoader::class.simpleName
 
-    fun loadFitImage(url: String, imageView: ImageView) {
+    companion object {
+        //prevent jvm to garbage collect target during image loading
+        var target: Target? = null
+    }
+
+    fun loadImageWithRecycleView(url: String, imageView: ImageView, listener: OnLoadingStateChanged? = null) {
+        val context = imageView.context
+
         Picasso.with(context).cancelRequest(imageView)
+        listener?.isLoaded(true)
         Picasso.with(context)
                 .load(url)
                 .fit()
                 .error(R.drawable.ic_crop_original_black_24dp)
                 .placeholder(R.drawable.ic_crop_original_black_24dp)
-                .into(imageView, object : Callback {
-                    override fun onSuccess() {
-                        Log.d(TAG, "load image success")
-                    }
-
-                    override fun onError() {
-                        Log.w(TAG, "error load image url: $url")
-                    }
-                })
+                .into(imageView, getCallback(listener))
     }
 
-    fun loadImage(url: String, imageView: ImageView) {
-        Picasso.with(context)
+    private fun getCallback(listener: OnLoadingStateChanged? = null):Callback{
+        return object : Callback {
+            override fun onSuccess() {
+                listener?.isLoaded(false)
+            }
+            override fun onError() {
+                listener?.isLoaded(false)
+            }
+        }
+    }
+
+
+    fun loadImage(url: String, imageView: ImageView, listener: OnLoadingStateChanged? = null) {
+        target = getPicassoTarget(imageView, listener)
+
+        Log.d(TAG, "url: $url")
+        Picasso.with(imageView.context)
                 .load(url)
                 .error(R.drawable.ic_crop_original_black_24dp)
                 .placeholder(R.drawable.ic_crop_original_black_24dp)
-                .into(object : Target {
-                    override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
-                    override fun onBitmapFailed(errorDrawable: Drawable?) {}
-                    override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-                        val width = bitmap?.width ?: 0
-                        val height = bitmap?.height ?: 0
-                        Log.d(TAG, "onBitmapLoaded width x height : $width x $height")
-                        imageView.layoutParams = FrameLayout.LayoutParams(width, height)
-                        imageView.setImageBitmap(bitmap)
-                    }
-                })
+                .into(target)
     }
 
+    private fun getPicassoTarget(imageView: ImageView, listener: OnLoadingStateChanged?): Target {
+        return object : Target {
+            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+                Log.d(TAG, "prepare to load")
+                listener?.isLoaded(true)
+            }
 
-    fun loadImage(url: String, imageView: ImageView, listener: OnLoadingStateChanged?) {
-        listener?.isLoaded(true)
-        Log.d(TAG, "url: $url")
-        Completable.create {
-            Picasso.with(imageView.context)
-                    .load(url)
-                    .error(R.drawable.ic_crop_original_black_24dp)
-                    .placeholder(R.drawable.ic_crop_original_black_24dp)
-                    .into(object : Target {
-                        override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
-                        override fun onBitmapFailed(errorDrawable: Drawable?) {
-                            Log.d(TAG, "load image fail")
-                        }
+            override fun onBitmapFailed(errorDrawable: Drawable?) {
+                Log.d(TAG, "load image fail")
+            }
 
-                        override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-                            Log.d(TAG, "onBitmapLoaded")
-                            val width = bitmap?.width ?: 0
-                            val height = bitmap?.height ?: 0
-                            Log.d(TAG, "onBitmapLoaded width x height : $width x $height")
-                            imageView.layoutParams = FrameLayout.LayoutParams(width, height)
-                            imageView.setImageBitmap(bitmap)
-                            listener?.isLoaded(false)
-                        }
-                    })
+            override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
+                Log.d(TAG, "onBitmapLoaded")
+                val width = bitmap?.width ?: 0
+                val height = bitmap?.height ?: 0
+                Log.d(TAG, "onBitmapLoaded width x height : $width x $height")
+                imageView.layoutParams = FrameLayout.LayoutParams(width, height)
+                imageView.setImageBitmap(bitmap)
+                listener?.isLoaded(false)
+                target = null
+            }
         }
-
     }
+
 }

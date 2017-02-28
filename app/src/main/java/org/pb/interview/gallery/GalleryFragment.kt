@@ -2,6 +2,7 @@ package org.pb.interview.gallery
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +17,6 @@ import org.pb.interview.common.RxInstance
 import org.pb.interview.common.api.CloudinaryApiService
 import org.pb.interview.common.inflateBinding
 import org.pb.interview.databinding.FragmentGalleryBinding
-import org.pb.interview.gallery.image_loader.ImageLoader
 import org.pb.interview.gallery.image_picker.ImagePicker
 import javax.inject.Inject
 
@@ -38,6 +38,7 @@ class GalleryFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d(TAG, "onCreate")
         MainActivity.mainActivityComponent.inject(this)
     }
 
@@ -60,7 +61,7 @@ class GalleryFragment : Fragment() {
     }
 
     fun createAdapter(): Maybe<ImageAdapter>{
-        return RxInstance.create { ImageAdapter(ImageLoader(context), fragmentHelper) }
+        return RxInstance.create { ImageAdapter(fragmentHelper) }
     }
     fun createImagePicker():Maybe<ImagePicker>{
         return RxInstance.create { ImagePicker(this) }

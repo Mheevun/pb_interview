@@ -41,6 +41,7 @@
             app:indicatorName="BallPulseIndicator"
             app:play="@{viewModel.isLoading}"
             app:indicatorColor="@color/colorAccent"
+            android:layout_gravity="center"
             />
         <GridView
             android:id="@+id/gridview"
@@ -50,8 +51,7 @@
             android:gravity="center"
             android:columnWidth="150dp"
             android:numColumns="auto_fit"
-            android:verticalSpacing="24dp"
-            android:horizontalSpacing="10dp"
+            android:verticalSpacing="12dp"
             android:stretchMode="spacingWidthUniform"
             app:adapter="@{viewModel.adapterObservable}"
             />

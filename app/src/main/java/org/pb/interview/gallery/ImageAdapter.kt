@@ -18,9 +18,10 @@ import org.pb.interview.gallery.image_loader.ImageLoader
 /**
  * provide grid's items
  */
-class ImageAdapter (val imageLoader: ImageLoader, val fragmentHelper: FragmentHelper) : BaseAdapter() {
+class ImageAdapter (val fragmentHelper: FragmentHelper) : BaseAdapter() {
     val TAG:String? = ImageAdapter::class.simpleName
     private val items = mutableListOf<String>()
+    private val imageLoader = ImageLoader()
 
     fun addItem(url:String){
         Log.d(TAG, "addItem: $url at ${items.size}")
@@ -67,7 +68,7 @@ class ImageAdapter (val imageLoader: ImageLoader, val fragmentHelper: FragmentHe
             viewHolder = itemLayout.tag as ViewHolder
         }
         val imageView =  viewHolder.binding.imageView
-        imageLoader.loadFitImage(items[position], imageView)
+        imageLoader.loadImageWithRecycleView(items[position], imageView)
         addClickToDetail( imageView, items[position])
 
         return itemLayout
