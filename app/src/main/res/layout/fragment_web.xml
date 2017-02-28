@@ -1,8 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
-    <WebView  xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/webview"
+    <data>
+        <variable
+            name="viewModel"
+            type="org.pb.interview.web.WebViewModel"/>
+    </data>
+    <android.support.design.widget.CoordinatorLayout 
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="match_parent">
+
+        <WebView
+            android:id="@+id/webview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:url="@{viewModel.url}"
+            app:onLoadingStateChanged="@{viewModel::onLoadingStateChanged}"
+            />
+
+        <com.wang.avi.AVLoadingIndicatorView
+            android:id="@+id/loading_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:indicatorColor="@color/colorAccent"
+            app:indicatorName="BallPulseIndicator"
+            app:play="@{viewModel.isLoading}" />
+    </android.support.design.widget.CoordinatorLayout>
+
 </layout>

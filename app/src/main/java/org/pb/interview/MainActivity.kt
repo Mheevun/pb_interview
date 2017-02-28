@@ -37,10 +37,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         lateinit var mainActivityComponent: MainActivityComponent
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
 
         initDI()
         initNavigatorDrawer()
@@ -49,11 +52,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         prepareFragment()
     }
 
+
     private fun initDI() {
         mainActivityComponent = DaggerMainActivityComponent.builder()
                 .appComponent(App.appComponent)
                 .netModule(NetModule("http://res.cloudinary.com/"))
-                .mainActivityModule(MainActivityModule(supportFragmentManager, container.id))
+                .mainActivityModule(MainActivityModule(supportFragmentManager, container.id, window, supportActionBar!!))
                 .build()
         mainActivityComponent.inject(this)
     }
