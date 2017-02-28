@@ -32,10 +32,11 @@ class GalleryViewModel(
     fun pickImage() {
         Log.d(TAG, "on click")
         imagePicker.pickImage()
+                .doOnSubscribe { isUploading.set(true) }
                 .subscribeOn(Schedulers.io())
                 .flatMapMaybe { path -> apiService.uploadImage(path) }
-                .doOnSubscribe { isUploading.set(true) }
                 .map { response -> response["url"] as String }
+                .doOnNext { isUploading.set(false) }
                 .doOnNext { adapter.addItem(it) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext { adapter.notifyDataSetChanged() }

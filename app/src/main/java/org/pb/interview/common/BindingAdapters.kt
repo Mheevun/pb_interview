@@ -33,6 +33,15 @@ fun setWebURL(webview:WebView, url:String, onLoadingStateChanged: OnLoadingState
     webview.loadUrl(url)
 }
 
+@BindingAdapter("inverse_visible")
+fun setVisibleByBoolean(view:View, isVisible:Boolean?){
+    System.out.println("inverse_visisble $isVisible")
+    if(isVisible==null || isVisible == false)
+        view.visibility = View.VISIBLE
+    else
+        view.visibility = View.INVISIBLE
+}
+
 @BindingAdapter("adapter")
 fun setAdapter(gridView:GridView, adapter:BaseAdapter?){
     gridView.adapter = adapter

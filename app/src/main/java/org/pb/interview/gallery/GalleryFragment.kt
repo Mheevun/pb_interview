@@ -39,8 +39,8 @@ class GalleryFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = container!!.inflateBinding(R.layout.fragment_gallery)
         initDI()
+        binding = container!!.inflateBinding(R.layout.fragment_gallery)
         return binding.root
     }
 
